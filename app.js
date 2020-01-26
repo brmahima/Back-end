@@ -7,6 +7,113 @@ const app = express()
 
 app.use(bodyParser.json())
 
+let Vendor = require('./modules/vendor')
+
+
+// Creat veondror
+app.post('/api/vendor', (req, res) => {
+
+    Vendor.create({
+        vendorId: req.body.vendorId,
+        fullName: req.body.fullName,
+        companyName: req.body.companyName,
+        bankName: req.body.bankName,
+        bAN: req.body.bAN,
+        bankBranch: req.body.bankBranch,
+        password: req.body.password,
+        phone: req.body.phone,
+        logo: req.body.logo,
+        vendorType: req.body.vendorType,
+        state: req.body.state,
+        createAt: req.body.createAt,
+        updateAt: req.body.updateAt,
+    }).then((vendor) => {
+        // if error send it. if not send ok query
+        if (vendor) {
+            res.json({
+                'query': 1,
+                "cause": "ok"
+            })
+        } else {
+            res.json({
+                'query': -1,
+                //here is the error message
+                "cause": "error"
+            })
+        }
+    })
+
+})
+
+//getting all vendors
+app.get('/api/vendor', (req, res) => {
+    Vendor.findAll().then((vendor) => {
+        res.json(vendor)
+    })
+
+})
+
+//getting avendor by id
+app.get('/api/vendor/:id', (req, res) => {
+    let id = req.params.id
+    Vendor.findByPk(id).then((vendor) => {
+        //check if exisits
+        if (vendor)
+            res.json(vendor)
+        else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
+//deleting vendor
+app.delete('/api/vendor/:id', (req, res) => {
+    let id = req.params.id
+
+    Vendor.findByPk(id).then((vendor) => {
+        //check if exisits
+        if (vendor) {
+            // clearing joind tables beacuse i's a foriegn key
+            vendor.setTracks([]).then(() => {
+                vendor.destroy().then()
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
+//update vendor
+app.put('/api/vendor/:id', (req, res) => {
+    let id = req.params.id
+   FullName= req.body.fullName
+    Vendor.findByPk(id).then((vendor) => {
+        //check if exisits
+        if (vendor) {
+            // updating
+            vendor.update({
+                fullName: FullName
+            }).then(()=>{
+                res.json({'full_name':FullName})
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
+
+
+
 app.post('/api/admin',(req,res)=>{
     console.log(req.body)
     Admin.create({
