@@ -1,16 +1,50 @@
 const express = require('express')
 const Sequelize = require('Sequelize')
 const bodyParser = require('body-parser')
-
-const Admin = require('././modules/admin')
 const app = express()
-
 app.use(bodyParser.json())
 
-let Vendor = require('./modules/vendor')
- 
-// vendor login
 
+const Admin = require('././modules/admin')
+// vendor module
+var Vendor = require('./modules/vendor')
+// event module
+var Event = require('./modules/event')
+// Creat event
+app.post('/api/event', (req, res) => {
+
+    Event.create({
+        adminId: req.body.adminId,
+        eventNameEn: req.body.eventNameEn,
+        eventNameAr: req.body.eventNameAr,
+        locationLat: req.body.locationLat,
+        locationLong: req.body.locationLong,
+        descriptionAr: req.body.descriptionAr,
+        descriptionEn: req.body.descriptionEn,
+        time: req.body.time,
+        state: req.body.state,
+        locationDescriptionAr: req.body.locationDescriptionAr,
+        locatoinDescriptionEn: req.body.locatoinDescriptionEn,
+      
+    }).then((vendor) => {
+        // if error send it. if not send ok query
+        if (vendor) {
+            res.json({
+                'query': 1,
+                "cause": "ok"
+            })
+        } else {
+            res.json({
+                'query': -1,
+                //here is the error message
+                "cause": "error"
+            })
+        }
+    })
+
+})
+
+// vendor login
 app.post('/api/vendorLogin', (req, res) => {
     console.log(req.body)
 
@@ -37,7 +71,7 @@ app.post('/api/vendorLogin', (req, res) => {
 
 })
   
-// Creat veondror
+// Create veondror
 app.post('/api/vendor', (req, res) => {
 
     Vendor.create({
@@ -52,8 +86,7 @@ app.post('/api/vendor', (req, res) => {
         logo: req.body.logo,
         vendorType: req.body.vendorType,
         state: req.body.state,
-        createAt: req.body.createAt,
-        updateAt: req.body.updateAt,
+      
     }).then((vendor) => {
         // if error send it. if not send ok query
         if (vendor) {
