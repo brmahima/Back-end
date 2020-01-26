@@ -14,7 +14,7 @@ let Vendor = require('./modules/vendor')
 app.post('/api/vendorLogin', (req, res) => {
     console.log(req.body)
 
-    Admin.findOne({
+    Vendor.findOne({
 
         where: {
             phone: req.body.phone,
