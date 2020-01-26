@@ -1,7 +1,7 @@
 const express = require('express')
 const Sequelize = require('Sequelize')
 const bodyParser = require('body-parser')
- 
+
 const Admin = require('././modules/admin')
 const app = express()
 
@@ -69,7 +69,7 @@ app.get('/api/vendor/:id', (req, res) => {
 
     })
 })
-//deleting vendor
+//deleting vendor still needs work
 app.delete('/api/vendor/:id', (req, res) => {
     let id = req.params.id
 
@@ -92,15 +92,17 @@ app.delete('/api/vendor/:id', (req, res) => {
 //update vendor
 app.put('/api/vendor/:id', (req, res) => {
     let id = req.params.id
-   FullName= req.body.fullName
+    FullName = req.body.fullName
     Vendor.findByPk(id).then((vendor) => {
         //check if exisits
         if (vendor) {
             // updating
             vendor.update({
                 fullName: FullName
-            }).then(()=>{
-                res.json({'full_name':FullName})
+            }).then(() => {
+                res.json({
+                    'full_name': FullName
+                })
             })
         } else {
             res.json({
@@ -114,46 +116,46 @@ app.put('/api/vendor/:id', (req, res) => {
 
 
 
-app.post('/api/admin',(req,res)=>{
+app.post('/api/admin', (req, res) => {
     console.log(req.body)
     Admin.create({
-        full_Name:req.body.full_Name,
-        userName:req.body.userName,
-        email:req.body.email,
-        password:req.body.password,
-        permission:+req.body.permission,
-        jobTitle:req.body.jobTitle,
-        createAt:req.body.createAt,
-        updateAt:req.body.updateAt
-    
-    }).then((admin)=>{
+        full_Name: req.body.full_Name,
+        userName: req.body.userName,
+        email: req.body.email,
+        password: req.body.password,
+        permission: +req.body.permission,
+        jobTitle: req.body.jobTitle,
+        createAt: req.body.createAt,
+        updateAt: req.body.updateAt
+
+    }).then((admin) => {
 
         res.json(admin)
     })
 })
 
-app.post('/api/adminLogin',(req,res)=>{
+app.post('/api/adminLogin', (req, res) => {
     console.log(req.body)
 
     Admin.findOne({
 
-        where :{
-            email :req.body.email,
-            password:req.body.password
+        where: {
+            email: req.body.email,
+            password: req.body.password
         }
-    }).then((loginInfo)=>{
-     
-        if(loginInfo== null){
+    }).then((loginInfo) => {
+
+        if (loginInfo == null) {
             res.json({
-                "massage":"not found"
+                "massage": "not found"
             })
-        }else{
+        } else {
             res.json(loginInfo)
         }
     })
 
 })
 
-app.listen(3000,()=>{
-console.log('server is running')
+app.listen(3000, () => {
+    console.log('server is running')
 })
