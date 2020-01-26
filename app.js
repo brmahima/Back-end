@@ -26,12 +26,13 @@ app.post('/api/event', (req, res) => {
         locationDescriptionAr: req.body.locationDescriptionAr,
         locatoinDescriptionEn: req.body.locatoinDescriptionEn,
       
-    }).then((vendor) => {
+    }).then((event) => {
         // if error send it. if not send ok query
-        if (vendor) {
+        if (event) {
             res.json({
                 'query': 1,
-                "cause": "ok"
+                "cause": "ok",
+                'event':event
             })
         } else {
             res.json({
@@ -64,7 +65,8 @@ app.post('/api/vendorLogin', (req, res) => {
         } else {
             res.json({
                 'query': 1,
-                "cause": "ok"
+                "cause": "ok",
+                'vendor':vendor
             })
          }
     })
@@ -92,7 +94,8 @@ app.post('/api/vendor', (req, res) => {
         if (vendor) {
             res.json({
                 'query': 1,
-                "cause": "ok"
+                "cause": "ok",
+                'vendor':vendor
             })
         } else {
             res.json({
