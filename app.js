@@ -8,8 +8,35 @@ const app = express()
 app.use(bodyParser.json())
 
 let Vendor = require('./modules/vendor')
+ 
+// vendor login
 
+app.post('/api/vendorLogin', (req, res) => {
+    console.log(req.body)
 
+    Admin.findOne({
+
+        where: {
+            phone: req.body.phone,
+            password: req.body.password
+        }
+    }).then((loginInfo) => {
+
+        if (loginInfo == null) {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        } else {
+            res.json({
+                'query': 1,
+                "cause": "ok"
+            })
+         }
+    })
+
+})
+  
 // Creat veondror
 app.post('/api/vendor', (req, res) => {
 
