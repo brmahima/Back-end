@@ -1,8 +1,23 @@
 const express = require('express')
 const Sequelize = require('Sequelize')
 const bodyParser = require('body-parser')
+const multer =require("multer")
 const app = express()
+
+const storage = multer.diskStorage({
+    destination:(req,file,callBack)=>{
+        callBack(null,'./uploads/')
+    },
+    filename:(req,file,callBack)=>{
+        callBack(null,new Date().toISOString().replace(/:/g, '-') + file.originalname)
+    }
+
+
+})
+
+const upload = multer({storage: storage})  
 app.use(bodyParser.json())
+
 
 
 const Admin = require('././modules/admin')
@@ -71,8 +86,9 @@ app.post('/api/vendorLogin', (req, res) => {
 
 })
   
-// Create veondror
-app.post('/api/vendor', (req, res) => {
+// Create veondror by mody
+//upload the logo bu brma
+app.post('/api/vendor',upload.single('vender_logo'), (req, res) => {
 
     Vendor.create({
         vendorId: req.body.vendorId,
@@ -83,7 +99,7 @@ app.post('/api/vendor', (req, res) => {
         bankBranch: req.body.bankBranch,
         password: req.body.password,
         phone: req.body.phone,
-        logo: req.body.logo,
+        logo: req.file.filename,
         vendorType: req.body.vendorType,
         state: req.body.state,
       
