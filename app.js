@@ -22,7 +22,8 @@ Event.belongsTo(Vendor,{
 //vendor with event end
 
 
-// Create event
+// Create event 
+// you cant creat event without the 2 forieng keys (event id, tyep of event id )
 app.post('/api/event', (req, res) => {
 
     Event.create({
