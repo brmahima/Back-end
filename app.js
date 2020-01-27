@@ -31,7 +31,8 @@ const Artist = require("./modules/artist")
 const Movies = require("./modules/movies")
 //sponsor module
 const Sponsor = require("./modules/sponsor")
-// Creat event
+//type of event module
+const TypeOfEvent = require("./modules/typeOfEvent")
 
 
 // realtionships
@@ -414,6 +415,29 @@ app.get('/api/movie/:id', (req, res) => {
 
     })
 })
+
+
+//create new sponsor
+app.post('/api/typeOfEvent',upload.single('sponsor_image'),(req,res)=>{
+    TypeOfEvent.create({
+        nameAr :req.body.name_ar,
+        nameEn :req.body.name_en,
+        image :req.file.filename
+        
+    }).then((typeOfEvent)=>{
+        res.json(typeOfEvent)
+    })
+})
+
+//getting all sponsor
+app.get('/api/typeOfEvent', (req, res) => {
+    TypeOfEvent.findAll().then((typeOfEvent) => {
+        res.json(typeOfEvent)
+    })
+
+})
+
+
 app.listen(3000, () => {
     console.log('server is running')
 })
