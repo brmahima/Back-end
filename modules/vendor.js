@@ -59,8 +59,7 @@ module.exports = sequelize.define('vendor', {
         field: 'updatedAt',
         type: Sequelize.DATE
     }
-
-
+    
 
 }, {
     freezeTableName: true
