@@ -10,7 +10,19 @@ const Admin = require('././modules/admin')
 var Vendor = require('./modules/vendor')
 // event module
 var Event = require('./modules/event')
-// Creat event
+
+// realtionships
+//vendor with event start
+Vendor.hasMany(Event,{ 
+    foreignKey:'vendor_id'
+})
+Event.belongsTo(Vendor,{
+    foreignKey:'vendor_id'
+})
+//vendor with event end
+
+
+// Create event
 app.post('/api/event', (req, res) => {
 
     Event.create({
@@ -25,7 +37,7 @@ app.post('/api/event', (req, res) => {
         state: req.body.state,
         locationDescriptionAr: req.body.locationDescriptionAr,
         locatoinDescriptionEn: req.body.locatoinDescriptionEn,
-      
+        vendorId: req.body.vendorId,
     }).then((event) => {
         // if error send it. if not send ok query
         if (event) {
@@ -45,6 +57,51 @@ app.post('/api/event', (req, res) => {
 
 })
 
+//getting all events
+app.get('/api/event', (req, res) => {
+    Event.findAll().then((event) => {
+        res.json(event)
+    })
+
+})
+
+//getting event by id
+app.get('/api/event/:id', (req, res) => {
+    let id = req.params.id
+    Event.findByPk(id).then((event) => {
+        //check if exisits
+        if (event)
+            res.json(event)
+        else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
+//getting event by vendor id
+app.get('/api/event/:id', (req, res) => {
+    let id = req.params.id
+    Event.findOne({
+
+        where: {
+            vendorId : req.body.id
+        }
+    }).then((event) => {
+        //check if exisits
+        if (event)
+            res.json(event)
+        else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
 // vendor login
 app.post('/api/vendorLogin', (req, res) => {
     console.log(req.body)
@@ -73,7 +130,7 @@ app.post('/api/vendorLogin', (req, res) => {
 
 })
   
-// Create veondror
+// Create veondor
 app.post('/api/vendor', (req, res) => {
 
     Vendor.create({

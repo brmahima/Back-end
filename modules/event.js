@@ -31,7 +31,7 @@ descriptionAr:{
     type:Sequelize.STRING
 },
 descriptionEn:{
-    field:'description_en',
+    field:'descripion_en',
     type:Sequelize.STRING
 },
 time:{
@@ -43,7 +43,7 @@ state:{
 },
 
 locationDescriptionAr:{
-    field:'	location_description_ar',
+    field:'location_description_ar',
     type:Sequelize.STRING
 },
 locatoinDescriptionEn:{
@@ -60,6 +60,10 @@ updateAt:{
     type:Sequelize.DATE
 }
 
-   
+,vendorId: {
+    field: 'vendor_id',
+    type: Sequelize.INTEGER
+}
+
 
 },{ freezeTableName:true})
