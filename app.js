@@ -36,14 +36,23 @@ const TypeOfEvent = require("./modules/typeOfEvent")
 
 
 // realtionships
-//vendor with event start
+//vendor with event ..start
 Vendor.hasMany(Event,{ 
     foreignKey:'vendor_id'
 })
 Event.belongsTo(Vendor,{
     foreignKey:'vendor_id'
 })
-//vendor with event end
+//vendor with event ..end
+
+//Event with type of event ..start
+TypeOfEvent.hasMany(Event,{ 
+    foreignKey:'type_of_event_id'
+})
+Event.belongsTo(TypeOfEvent,{
+    foreignKey:'type_of_event_id'
+})
+//Event with type of event ..end
 
 
 // Create event 
@@ -417,8 +426,8 @@ app.get('/api/movie/:id', (req, res) => {
 })
 
 
-//create new sponsor
-app.post('/api/typeOfEvent',upload.single('sponsor_image'),(req,res)=>{
+//create new Type of event
+app.post('/api/typeOfEvent',upload.single('Type_of_event_image'),(req,res)=>{
     TypeOfEvent.create({
         nameAr :req.body.name_ar,
         nameEn :req.body.name_en,
@@ -429,13 +438,6 @@ app.post('/api/typeOfEvent',upload.single('sponsor_image'),(req,res)=>{
     })
 })
 
-//getting all sponsor
-app.get('/api/typeOfEvent', (req, res) => {
-    TypeOfEvent.findAll().then((typeOfEvent) => {
-        res.json(typeOfEvent)
-    })
-
-})
 
 
 app.listen(3000, () => {

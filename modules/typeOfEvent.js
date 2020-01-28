@@ -22,4 +22,5 @@ module.exports = sequelize.define('type_of_event', {
     }
     
     
-})
+},{ freezeTableName:true,
+    timestamps:false})
