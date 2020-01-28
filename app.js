@@ -48,14 +48,14 @@ Event.belongsTo(Vendor,{
 //vendor with event end
 
 //Relationship between event and artist
-Event.belongsToMany(Artist, { through: EventWithArtest })
-Artist.belongsToMany(Event, { through: EventWithArtest })
+//Event.belongsToMany(Artist, { through: EventWithArtest })
+//Artist.belongsToMany(Event, { through: EventWithArtest })
 //Relationship between event and Sponsor
-Event.belongsToMany(Sponsor, { through: EventWithSponsor })
-Sponsor.belongsToMany(Event, { through: EventWithSponsor })
+//Event.belongsToMany(Sponsor, { through: EventWithSponsor })
+//Sponsor.belongsToMany(Event, { through: EventWithSponsor })
 //Relationship between event and Movies
-Event.belongsToMany(Movies, { through: EventWithMovies })
-Movies.belongsToMany(Event, { through: EventWithMovies })
+//Event.belongsToMany(Movies, { through: EventWithMovies })
+//Movies.belongsToMany(Event, { through: EventWithMovies })
 
 // Create event
 app.post('/api/event', (req, res) => {
