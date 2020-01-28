@@ -64,6 +64,11 @@ updateAt:{
     field: 'vendor_id',
     type: Sequelize.INTEGER
 }
+,typOfEventId:{
+    field: "type_of_event_id",
+    type: Sequelize.INTEGER,
+    
+}
 
 
 },{ freezeTableName:true})

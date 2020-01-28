@@ -72,6 +72,7 @@ app.post('/api/event', (req, res) => {
         locationDescriptionAr: req.body.locationDescriptionAr,
         locatoinDescriptionEn: req.body.locatoinDescriptionEn,
         vendorId: req.body.vendorId,
+        typOfEventId:req.body.typOfEventId
     }).then((event) => {
         // if error send it. if not send ok query
         if (event) {
