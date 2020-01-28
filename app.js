@@ -1,21 +1,23 @@
 const express = require('express')
 const Sequelize = require('Sequelize')
 const bodyParser = require('body-parser')
-const multer =require("multer")
+const multer = require("multer")
 const app = express()
 
 const storage = multer.diskStorage({
-    destination:(req,file,callBack)=>{
-        callBack(null,'./uploads/')
+    destination: (req, file, callBack) => {
+        callBack(null, './uploads/')
     },
-    filename:(req,file,callBack)=>{
-        callBack(null,new Date().toISOString().replace(/:/g, '-') + file.originalname)
+    filename: (req, file, callBack) => {
+        callBack(null, new Date().toISOString().replace(/:/g, '-') + file.originalname)
     }
 
 
 })
 
-const upload = multer({storage: storage})  
+const upload = multer({
+    storage: storage
+})
 app.use(bodyParser.json())
 
 
@@ -37,20 +39,20 @@ const TypeOfEvent = require("./modules/typeOfEvent")
 
 // realtionships
 //vendor with event ..start
-Vendor.hasMany(Event,{ 
-    foreignKey:'vendor_id'
+Vendor.hasMany(Event, {
+    foreignKey: 'vendor_id'
 })
-Event.belongsTo(Vendor,{
-    foreignKey:'vendor_id'
+Event.belongsTo(Vendor, {
+    foreignKey: 'vendor_id'
 })
 //vendor with event ..end
 
 //Event with type of event ..start
-TypeOfEvent.hasMany(Event,{ 
-    foreignKey:'type_of_event_id'
+TypeOfEvent.hasMany(Event, {
+    foreignKey: 'type_of_event_id'
 })
-Event.belongsTo(TypeOfEvent,{
-    foreignKey:'type_of_event_id'
+Event.belongsTo(TypeOfEvent, {
+    foreignKey: 'type_of_event_id'
 })
 //Event with type of event ..end
 
@@ -60,7 +62,6 @@ Event.belongsTo(TypeOfEvent,{
 app.post('/api/event', (req, res) => {
 
     Event.create({
-        adminId: req.body.adminId,
         eventNameEn: req.body.eventNameEn,
         eventNameAr: req.body.eventNameAr,
         locationLat: req.body.locationLat,
@@ -72,14 +73,14 @@ app.post('/api/event', (req, res) => {
         locationDescriptionAr: req.body.locationDescriptionAr,
         locatoinDescriptionEn: req.body.locatoinDescriptionEn,
         vendorId: req.body.vendorId,
-        typOfEventId:req.body.typOfEventId
+        typOfEventId: req.body.typOfEventId
     }).then((event) => {
         // if error send it. if not send ok query
         if (event) {
             res.json({
                 'query': 1,
                 "cause": "ok",
-                'event':event
+                'event': event
             })
         } else {
             res.json({
@@ -116,26 +117,55 @@ app.get('/api/event/:id', (req, res) => {
 
     })
 })
-//getting event by vendor id
-app.get('/api/event/:id', (req, res) => {
+//getting event by vendor id and type of event id
+// key 1 == vendor id ,, key 2== type event id
+app.get('/api/event/:id/:key', (req, res) => {
     let id = req.params.id
-    Event.findOne({
+    let key = req.params.key
+    if (key == 1) {
 
-        where: {
-            vendorId : req.body.id
-        }
-    }).then((event) => {
-        //check if exisits
-        if (event)
-            res.json(event)
-        else {
-            res.json({
-                'query': -1,
-                "cause": "not found"
-            })
-        }
 
-    })
+        Event.findOne({
+
+            where: {
+                vendorId: id
+            }
+        }).then((event) => {
+            //check if exisits
+            if (event)
+                res.json(event)
+            else {
+                res.json({
+                    'query': -1,
+                    "cause": "not found"
+                })
+            }
+
+        })
+    } else if (key == 2) {
+        Event.findOne({
+
+            where: {
+                typOfEventId: id
+            }
+        }).then((event) => {
+            //check if exisits
+            if (event)
+                res.json(event)
+            else {
+                res.json({
+                    'query': -1,
+                    "cause": "not found"
+                })
+            }
+
+        })
+    } else {
+        res.json({
+            'query': -1,
+            "cause": "not found"
+        })
+    }
 })
 // vendor login
 app.post('/api/vendorLogin', (req, res) => {
@@ -158,17 +188,17 @@ app.post('/api/vendorLogin', (req, res) => {
             res.json({
                 'query': 1,
                 "cause": "ok",
-                'vendor':vendor
+                'vendor': vendor
             })
-         }
+        }
     })
 
 })
-  
+
 
 // Create veondror by mody
 //upload the logo bu brma
-app.post('/api/vendor',upload.single('vender_logo'), (req, res) => {
+app.post('/api/vendor', upload.single('vender_logo'), (req, res) => {
 
 
     Vendor.create({
@@ -183,14 +213,14 @@ app.post('/api/vendor',upload.single('vender_logo'), (req, res) => {
         logo: req.file.filename,
         vendorType: req.body.vendorType,
         state: req.body.state,
-      
+
     }).then((vendor) => {
         // if error send it. if not send ok query
         if (vendor) {
             res.json({
                 'query': 1,
                 "cause": "ok",
-                'vendor':vendor
+                'vendor': vendor
             })
         } else {
             res.json({
@@ -316,13 +346,13 @@ app.post('/api/adminLogin', (req, res) => {
 })
 
 //create new artist
-app.post('/api/artist',upload.single('artist_image'),(req,res)=>{
+app.post('/api/artist', upload.single('artist_image'), (req, res) => {
     Artist.create({
-        nameAr :req.body.name_ar,
-        nameEn :req.body.name_en,
-        image :req.file.filename
-        
-    }).then((Artist)=>{
+        nameAr: req.body.name_ar,
+        nameEn: req.body.name_en,
+        image: req.file.filename
+
+    }).then((Artist) => {
         res.json(Artist)
     })
 })
@@ -353,13 +383,13 @@ app.get('/api/artist/:id', (req, res) => {
 })
 
 //create new sponsor
-app.post('/api/sponsor',upload.single('sponsor_image'),(req,res)=>{
+app.post('/api/sponsor', upload.single('sponsor_image'), (req, res) => {
     Sponsor.create({
-        nameAr :req.body.name_ar,
-        nameEn :req.body.name_en,
-        image :req.file.filename
-        
-    }).then((Sponsor)=>{
+        nameAr: req.body.name_ar,
+        nameEn: req.body.name_en,
+        image: req.file.filename
+
+    }).then((Sponsor) => {
         res.json(Sponsor)
     })
 })
@@ -390,13 +420,13 @@ app.get('/api/sponsor/:id', (req, res) => {
 })
 
 //create new movie
-app.post('/api/movie',upload.single('movie_image'),(req,res)=>{
+app.post('/api/movie', upload.single('movie_image'), (req, res) => {
     Movies.create({
-        nameAr :req.body.name_ar,
-        nameEn :req.body.name_en,
-        image :req.file.filename
-        
-    }).then((Movie)=>{
+        nameAr: req.body.name_ar,
+        nameEn: req.body.name_en,
+        image: req.file.filename
+
+    }).then((Movie) => {
         res.json(Movie)
     })
 })
@@ -428,13 +458,13 @@ app.get('/api/movie/:id', (req, res) => {
 
 
 //create new Type of event
-app.post('/api/typeOfEvent',upload.single('Type_of_event_image'),(req,res)=>{
+app.post('/api/typeOfEvent', upload.single('Type_of_event_image'), (req, res) => {
     TypeOfEvent.create({
-        nameAr :req.body.name_ar,
-        nameEn :req.body.name_en,
-        image :req.file.filename
-        
-    }).then((typeOfEvent)=>{
+        nameAr: req.body.name_ar,
+        nameEn: req.body.name_en,
+        image: req.file.filename
+
+    }).then((typeOfEvent) => {
         res.json(typeOfEvent)
     })
 })

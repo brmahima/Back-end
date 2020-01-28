@@ -1,7 +1,7 @@
 sequelize = require('./../database/sequelize')
 const Sequelize = require('sequelize')
 module.exports = sequelize.define('event', {
-adminId:{
+    EventId:{
     field:'event_id',
     type: Sequelize.INTEGER,
     autoIncrement:true,
@@ -62,11 +62,13 @@ updateAt:{
 
 ,vendorId: {
     field: 'vendor_id',
-    type: Sequelize.INTEGER
+    type: Sequelize.INTEGER,
+    foreignKey:true
 }
 ,typOfEventId:{
     field: "type_of_event_id",
     type: Sequelize.INTEGER,
+
     
 }
 
