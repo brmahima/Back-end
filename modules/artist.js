@@ -19,7 +19,16 @@ module.exports = sequelize.define('artist', {
     },
     image:{
         type:Sequelize.STRING
+    },
+
+    createAt:{
+        field:'createdAt',
+        type:Sequelize.DATE
+    },
+    updateAt:{
+        field:'updatedAt',
+        type:Sequelize.DATE
     }
     
     
-})
+},{ freezeTableName:true})

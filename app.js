@@ -25,15 +25,16 @@ const Admin = require('././modules/admin')
 var Vendor = require('./modules/vendor')
 // event module
 var Event = require('./modules/event')
-
-=======
 //artist module
 const Artist = require("./modules/artist")
 //movies module
 const Movies = require("./modules/movies")
 //sponsor module
 const Sponsor = require("./modules/sponsor")
-// Creat event
+//event_with_artist module
+const EventWithArtest = require("./modules/eventWithArtist")
+const EventWithSponsor = require("./modules/eventWithSponsor")
+const EventWithMovies = require("./modules/eventWithMovies")
 
 
 // realtionships
@@ -45,6 +46,16 @@ Event.belongsTo(Vendor,{
     foreignKey:'vendor_id'
 })
 //vendor with event end
+
+//Relationship between event and artist
+Event.belongsToMany(Artist, { through: EventWithArtest })
+Artist.belongsToMany(Event, { through: EventWithArtest })
+//Relationship between event and Sponsor
+Event.belongsToMany(Sponsor, { through: EventWithSponsor })
+Sponsor.belongsToMany(Event, { through: EventWithSponsor })
+//Relationship between event and Movies
+Event.belongsToMany(Movies, { through: EventWithMovies })
+Movies.belongsToMany(Event, { through: EventWithMovies })
 
 // Create event
 app.post('/api/event', (req, res) => {
@@ -92,7 +103,9 @@ app.get('/api/event', (req, res) => {
 //getting event by id
 app.get('/api/event/:id', (req, res) => {
     let id = req.params.id
-    Event.findByPk(id).then((event) => {
+    Event.findByPk(id,{
+        include:[Artist]
+    }).then((event) => {
         //check if exisits
         if (event)
             res.json(event)
@@ -155,9 +168,7 @@ app.post('/api/vendorLogin', (req, res) => {
 })
   
 
-// Create veondor
-app.post('/api/vendor', (req, res) => {
-=======
+
 // Create veondror by mody
 //upload the logo bu brma
 app.post('/api/vendor',upload.single('vender_logo'), (req, res) => {
@@ -419,4 +430,5 @@ app.get('/api/movie/:id', (req, res) => {
 })
 app.listen(3000, () => {
     console.log('server is running')
-})
+}
+    )
