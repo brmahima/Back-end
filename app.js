@@ -33,16 +33,6 @@ const Artist = require("./modules/artist")
 const Movies = require("./modules/movies")
 //sponsor module
 const Sponsor = require("./modules/sponsor")
-<<<<<<< HEAD
-//event_with_artist module
-const EventWithArtest = require("./modules/eventWithArtist")
-const EventWithSponsor = require("./modules/eventWithSponsor")
-const EventWithMovies = require("./modules/eventWithMovies")
-=======
-//type of event module
-const TypeOfEvent = require("./modules/typeOfEvent")
->>>>>>> 5c1b0747afb6cda967dbd8fb170847f25735ad52
-
 
 // realtionships
 //vendor with event ..start
@@ -90,20 +80,6 @@ Movies.belongsToMany(Event,{
 })
 //event with movie ..end
 
-
-<<<<<<< HEAD
-//Relationship between event and artist
-//Event.belongsToMany(Artist, { through: EventWithArtest })
-//Artist.belongsToMany(Event, { through: EventWithArtest })
-//Relationship between event and Sponsor
-//Event.belongsToMany(Sponsor, { through: EventWithSponsor })
-//Sponsor.belongsToMany(Event, { through: EventWithSponsor })
-//Relationship between event and Movies
-//Event.belongsToMany(Movies, { through: EventWithMovies })
-//Movies.belongsToMany(Event, { through: EventWithMovies })
-
-// Create event
-=======
 //Event with Sponsor ..start
 Event.belongsToMany(Sponsor,{
     through:"event_with_sponsor",
@@ -119,7 +95,7 @@ Sponsor.belongsToMany(Event,{
 
 // Create event 
 // you cant create event without the 2 forieng keys (event id, tyep of event id )
->>>>>>> 5c1b0747afb6cda967dbd8fb170847f25735ad52
+
 app.post('/api/event', (req, res) => {
 
     Event.create({
