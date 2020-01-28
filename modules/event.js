@@ -68,7 +68,7 @@ updateAt:{
 ,typOfEventId:{
     field: "type_of_event_id",
     type: Sequelize.INTEGER,
-
+    foreignKey:true
     
 }
 
