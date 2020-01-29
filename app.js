@@ -70,32 +70,6 @@ Artist.belongsToMany(Event,{
 //event with artist ..end
 
 
-//Event with movie ..start
-Event.belongsToMany(Movies,{
-    through:"event_with_movies",
-    foreignKey: 'event_id',
-    timestamps:false
-})
-Movies.belongsToMany(Event,{
-    through:"event_with_movies",
-    foreignKey: 'movie_id',
-    timestamps:false
-})
-//event with movie ..end
-
-
-//Event with Sponsor ..start
-Event.belongsToMany(Sponsor,{
-    through:"event_with_sponsor",
-    foreignKey: 'event_id',
-    timestamps:false
-})
-Sponsor.belongsToMany(Event,{
-    through:"event_with_sponsor",
-    foreignKey: 'sponsor_id',
-    timestamps:false
-})
-//event with Sponsor ..end
 
 // Create event 
 // you cant create event without the 2 forieng keys (event id, tyep of event id )
