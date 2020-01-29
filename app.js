@@ -33,6 +33,18 @@ const Artist = require("./modules/artist")
 const Movies = require("./modules/movies")
 //sponsor module
 const Sponsor = require("./modules/sponsor")
+//club module
+const  Club = require("./modules/club")
+//Type of event
+const TypeOfEvent = require("./modules/typeOfEvent")
+//eventWithArtist
+const EventWithArtist = require("./modules/eventWithArtist")
+//eventWithMovies
+const EventWithMovies = require("./modules/eventWithMovies")
+//eventWithSponsor
+const EventWithSponsor = require("./modules/eventWithSponsor")
+//eventWithClub
+const EventWithClub = require("./modules/eventWithClub")
 
 // realtionships
 //vendor with event ..start
@@ -92,6 +104,7 @@ Sponsor.belongsToMany(Event,{
     timestamps:false
 })
 //event with Sponsor ..end
+
 
 // Create event 
 // you cant create event without the 2 forieng keys (event id, tyep of event id )
@@ -495,6 +508,44 @@ app.get('/api/movie/:id', (req, res) => {
     })
 })
 
+//create new club
+app.post('/api/club', upload.single('club_image'), (req, res) => {
+    Club.create({
+        nameAr: req.body.name_ar,
+        nameEn: req.body.name_en,
+        image: req.file.filename
+
+    }).then((club) => {
+        res.json(club)
+    })
+})
+
+//getting all clubs
+app.get('/api/club', (req, res) => {
+    Club.findAll().then((club) => {
+        res.json(club)
+    })
+
+})
+
+//getting clubs by id
+app.get('/api/club/:id', (req, res) => {
+    let id = req.params.id
+    Club.findByPk(id).then((club) => {
+        //check if exisits
+        if (club)
+            res.json(club)
+        else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
+
+
 
 //create new Type of event
 app.post('/api/typeOfEvent', upload.single('Type_of_event_image'), (req, res) => {
@@ -508,7 +559,48 @@ app.post('/api/typeOfEvent', upload.single('Type_of_event_image'), (req, res) =>
     })
 })
 
+//create new EventWithArtist
+app.post('/api/eventWithArtist', (req, res) => {
+    EventWithArtist.create({
+        eventId: req.body.eventId,
+        artistId: req.body.artistId,
 
+
+    }).then((eventWithArtist) => {
+        res.json(eventWithArtist)
+    })
+})
+//create new EventWithMovies
+app.post('/api/eventWithMovies', (req, res) => {
+    EventWithMovies.create({
+        eventId: req.body.eventId,
+        moviesId: req.body.moviesId,
+
+    }).then((eventWithMovies) => {
+        res.json(eventWithMovies)
+    })
+})
+//create eventWithSponsor
+app.post('/api/eventWithSponsor', (req, res) => {
+    EventWithSponsor.create({
+        eventId: req.body.eventId,
+        sponsorId: req.body.sponsorId,
+
+    }).then((eventWithSponsor) => {
+        res.json(eventWithSponsor)
+    })
+})
+
+//create EventWithClub
+app.post('/api/eventWithClub', (req, res) => {
+    EventWithClub.create({
+        eventId: req.body.eventId,
+        clubId: req.body.clubId,
+
+    }).then((eventWithClub) => {
+        res.json(eventWithClub)
+    })
+})
 
 app.listen(3000, () => {
     console.log('server is running')
