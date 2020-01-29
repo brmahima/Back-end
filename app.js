@@ -33,9 +33,6 @@ const Artist = require("./modules/artist")
 const Movies = require("./modules/movies")
 //sponsor module
 const Sponsor = require("./modules/sponsor")
-//type of event module
-const TypeOfEvent = require("./modules/typeOfEvent")
-
 
 // realtionships
 //vendor with event ..start
@@ -70,9 +67,36 @@ Artist.belongsToMany(Event,{
 //event with artist ..end
 
 
+//Event with movie ..start
+Event.belongsToMany(Movies,{
+    through:"event_with_movies",
+    foreignKey: 'event_id',
+    timestamps:false
+})
+Movies.belongsToMany(Event,{
+    through:"event_with_movies",
+    foreignKey: 'movie_id',
+    timestamps:false
+})
+//event with movie ..end
+
+//Event with Sponsor ..start
+Event.belongsToMany(Sponsor,{
+    through:"event_with_sponsor",
+    foreignKey: 'event_id',
+    timestamps:false
+})
+Sponsor.belongsToMany(Event,{
+    through:"event_with_sponsor",
+    foreignKey: 'sponsor_id',
+    timestamps:false
+})
+//event with Sponsor ..end
+
 
 // Create event 
 // you cant create event without the 2 forieng keys (event id, tyep of event id )
+
 app.post('/api/event', (req, res) => {
 
     Event.create({
@@ -118,7 +142,9 @@ app.get('/api/event', (req, res) => {
 //getting event by id
 app.get('/api/event/:id', (req, res) => {
     let id = req.params.id
-    Event.findByPk(id).then((event) => {
+    Event.findByPk(id,{
+        include:[Artist]
+    }).then((event) => {
         //check if exisits
         if (event)
             res.json(event)
@@ -487,4 +513,5 @@ app.post('/api/typeOfEvent', upload.single('Type_of_event_image'), (req, res) =>
 
 app.listen(3000, () => {
     console.log('server is running')
-})
+}
+    )
