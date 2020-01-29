@@ -219,6 +219,40 @@ app.get('/api/event/:id/:key', (req, res) => {
         })
     }
 })
+//update Event 
+app.put('/api/event/:id', (req, res) => {
+    let id = req.params.id
+
+    Event.findByPk(id).then((event) => {
+        //check if exisits
+        if (event) {
+            // updating
+            event.update({
+                eventNameEn: req.body.eventNameEn,
+                eventNameAr: req.body.eventNameAr,
+                locationLat: req.body.locationLat,
+                locationLong: req.body.locationLong,
+                descriptionAr: req.body.descriptionAr,
+                descriptionEn: req.body.descriptionEn,
+                time: req.body.time,
+                state: req.body.state,
+                locationDescriptionAr: req.body.locationDescriptionAr,
+                locatoinDescriptionEn: req.body.locatoinDescriptionEn,
+                vendorId: req.body.vendorId,
+                typOfEventId: req.body.typOfEventId
+            }).then(() => {
+                res.json(req.body)
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
+
 // vendor login
 app.post('/api/vendorLogin', (req, res) => {
     console.log(req.body)
@@ -246,8 +280,6 @@ app.post('/api/vendorLogin', (req, res) => {
     })
 
 })
-
-
 // Create veondror by mody
 //upload the logo bu brma
 app.post('/api/vendor', upload.single('vender_logo'), (req, res) => {
@@ -293,7 +325,7 @@ app.get('/api/vendor', (req, res) => {
 
 })
 
-//getting avendor by id
+//getting a vendor by id
 app.get('/api/vendor/:id', (req, res) => {
     let id = req.params.id
     Vendor.findByPk(id).then((vendor) => {
@@ -329,20 +361,26 @@ app.delete('/api/vendor/:id', (req, res) => {
 
     })
 })
-//update vendor
+//update vendor with out image
 app.put('/api/vendor/:id', (req, res) => {
     let id = req.params.id
-    FullName = req.body.fullName
     Vendor.findByPk(id).then((vendor) => {
         //check if exisits
         if (vendor) {
             // updating
             vendor.update({
-                fullName: FullName
+        vendorId: req.body.vendorId,
+        fullName: req.body.fullName,
+        companyName: req.body.companyName,
+        bankName: req.body.bankName,
+        bAN: req.body.bAN,
+        bankBranch: req.body.bankBranch,
+        password: req.body.password,
+        phone: req.body.phone,
+        vendorType: req.body.vendorType,
+        state: req.body.state,
             }).then(() => {
-                res.json({
-                    'full_name': FullName
-                })
+                res.json(req.body)
             })
         } else {
             res.json({
@@ -558,6 +596,30 @@ app.post('/api/typeOfEvent', upload.single('Type_of_event_image'), (req, res) =>
         res.json(typeOfEvent)
     })
 })
+//update Type of event with out photo
+app.put('/api/typeOfEvent/:id', (req, res) => {
+    let id = req.params.id
+
+    TypeOfEvent.findByPk(id).then((typeOfEvent) => {
+        //check if exisits
+        if (typeOfEvent) {
+            // updating
+            typeOfEvent.update({
+                nameAr: req.body.name_ar,
+        nameEn: req.body.name_en,
+            }).then(() => {
+                res.json(req.body)
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
+
 
 //create new EventWithArtist
 app.post('/api/eventWithArtist', (req, res) => {
