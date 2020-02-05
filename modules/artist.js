@@ -28,7 +28,11 @@ module.exports = sequelize.define('artist', {
     updateAt:{
         field:'updatedAt',
         type:Sequelize.DATE
+    },
+    state:{
+        type:Sequelize.INTEGER
     }
+
     
     
 },{ freezeTableName:true})
