@@ -144,12 +144,56 @@ app.post('/api/event', (req, res) => {
 })
 
 //getting all events
-app.get('/api/event', (req, res) => {
-    Event.findAll().then((event) => {
+app.get('/api/events/:start', (req, res) => {
+    let start = req.params.start
+    Event.findAndCountAll().then((event) => {
+        if(event){
+            if(+event.count<=3){
+                res.json({'events':event.rows})
+            }else if(+event.count>3){
+                Event.findAndCountAll({
+                    offset:+start,
+                    limit:3,
+                    subQuery:false
+                }).then((even)=>{
+                        console.log(even.rows.length)
+                    if(even.rows.length<3){
+                        res.json({
+                            'start':+start +even.rows.length,
+                            'events':even.rows,
+                            'state':'its end'
+                        })
+                    }else if(even.rows.length>=3) {
+                        res.json({
+                            'start':+start +3,
+                            'events':even.rows,
+                            'state':'load more'
+                        })
+                    }
+                })
+            }
+        }
+        
+    })
+
+})
+
+//getting active event where state =1 'active' ,0 'not active
+app.get('/api/eventActive/:state', (req, res) => {
+    let state = req.params.state
+    Event.findAll(
+        {
+            where :{
+                'state':state
+            }
+        }
+    ).then((event) => {
+
         res.json(event)
     })
 
 })
+
 
 //getting event by id
 app.get('/api/event/:id', (req, res) => {
@@ -332,17 +376,12 @@ app.delete('/api/vendor/:id', (req, res) => {
 //update vendor
 app.put('/api/vendor/:id', (req, res) => {
     let id = req.params.id
-    FullName = req.body.fullName
     Vendor.findByPk(id).then((vendor) => {
         //check if exisits
         if (vendor) {
             // updating
-            vendor.update({
-                fullName: FullName
-            }).then(() => {
-                res.json({
-                    'full_name': FullName
-                })
+            vendor.update(req.body).then((vendorU) => {
+                res.json(vendorU)
             })
         } else {
             res.json({
@@ -396,7 +435,49 @@ app.post('/api/adminLogin', (req, res) => {
     })
 
 })
+//update admin 
+app.put('/api/admin/:id', (req, res) => {
+    let id = req.params.id
+    Admin.findByPk(id).then((admin) => {
+        //check if exisits
+        if (admin) {
+            // updating
+            admin.update(req.body).then((admin1) => {
+                res.json(admin1)
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
 
+    })
+})
+
+//delete from Admin
+app.delete('/api/admin/:id', (req, res) => {
+    let id = req.params.id
+
+    Admin.findByPk(id).then((admin) => {
+        //check if exisits
+        if (admin) {
+           
+           admin.destroy().then(()=>{
+               res.json({
+                'query': 1,
+                "cause": "deleted"
+               })
+           })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
 //create new artist
 app.post('/api/artist', upload.single('artist_image'), (req, res) => {
     Artist.create({
