@@ -413,13 +413,14 @@ app.put('/api/vendor/:id', (req, res) => {
         if (vendor) {
             // updating
 
-            vendor.update({
-          res.body  }).then(() => {
+            vendor.update(
+          req.body  
+          ).then(() => {
                 res.json(req.body)
             vendor.update(req.body).then((vendorU) => {
                 res.json(vendorU)
             })
-        } else {
+        })} else {
             res.json({
                 'query': -1,
                 "cause": "not found"
