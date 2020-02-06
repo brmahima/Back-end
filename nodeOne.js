@@ -1,5 +1,5 @@
 const express = require('express')
-const Sequelize = require('Sequelize')
+
 const bodyParser = require('body-parser')
 const multer = require("multer")
 const app = express()
@@ -14,7 +14,12 @@ const storage = multer.diskStorage({
 
 
 })
-
+//to gidaq
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 const upload = multer({
     storage: storage
 })
@@ -131,13 +136,15 @@ app.get('/api/eventActive/:state', (req, res) => {
 //getting event by id
 app.get('/api/event/:id', (req, res) => {
     let id = req.params.id
-    Event.findByPk(id,{
-        include:[Artist]
-    }).then((event) => {
+    Event.findAll({where:{
+        eventId:id
+    }}).then((event) => {
         //check if exisits
+        console.log(event)
         if (event)
             res.json(event)
         else {
+            res.download
             res.json({
                 'query': -1,
                 "cause": "not found"

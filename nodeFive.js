@@ -1,5 +1,5 @@
 const express = require('express')
-const Sequelize = require('Sequelize')
+
 const bodyParser = require('body-parser')
 const multer = require("multer")
 const app = express()

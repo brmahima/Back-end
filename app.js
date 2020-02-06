@@ -1,5 +1,5 @@
 const express = require('express')
-const Sequelize = require('Sequelize')
+
 const bodyParser = require('body-parser')
 const multer = require("multer")
 const app = express()
@@ -14,7 +14,12 @@ const storage = multer.diskStorage({
 
 
 })
-
+//to gidaq
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 const upload = multer({
     storage: storage
 })
