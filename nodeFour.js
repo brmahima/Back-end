@@ -203,7 +203,8 @@ app.delete('/api/artist/:id', (req, res) => {
                 'query': -1,
                 "cause": "not found"
             })
-        }
+        } })
+    })
 
 
 //create new sponsor
@@ -420,6 +421,7 @@ app.delete('/api/sponsor/:id', (req, res) => {
         }
 
     })
+})
 
 app.get('/api/movies/:start/:limit', (req, res) => {
     let start = req.params.start
@@ -532,7 +534,7 @@ app.put('/api/movies/:id', (req, res) => {
 }) 
 
 //delete Movies
-app.delete('/api/sponsor/:id', (req, res) => {
+app.delete('/api/movies/:id', (req, res) => {
     let id = req.params.id
 
     Movies.findByPk(id).then((movies) => {
@@ -550,8 +552,8 @@ app.delete('/api/sponsor/:id', (req, res) => {
                 "cause": "not found"
             })
         }
-
-
+    })
+})
 //create new club
 app.post('/api/club', upload.single('clubImage'), (req, res) => {
     Club.findOne({
