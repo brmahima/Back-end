@@ -28,17 +28,7 @@ const Movies = require("./modules/movies")
 const Sponsor = require("./modules/sponsor")
 //club module
 const  Club = require("./modules/club")
-//create new artist
-app.post('/api/artist', upload.single('artist_image'), (req, res) => {
-    Artist.create({
-        nameAr: req.body.name_ar,
-        nameEn: req.body.name_en,
-        image: req.file.filename
 
-    }).then((Artist) => {
-        res.json(Artist)
-    })
-})
 
 //getting all artist
 app.get('/api/artist', (req, res) => {
@@ -64,23 +54,58 @@ app.get('/api/artist/:id', (req, res) => {
 
     })
 })
+// update artist
+app.put('/api/artist/:id', (req, res) => {
+    let id = req.params.id
+    Artist.findByPk(id).then((artist) => {
+        //check if exisits
+        if (artist) {
+            // updating
+            artist.update(req.body).then(() => {
+                res.json(
+                    { 'query': 1
+                    })
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
 
-//create new sponsor
-app.post('/api/sponsor', upload.single('sponsor_image'), (req, res) => {
-    Sponsor.create({
-        nameAr: req.body.name_ar,
-        nameEn: req.body.name_en,
-        image: req.file.filename
+    })
+}) 
 
-    }).then((Sponsor) => {
-        res.json(Sponsor)
+//delete artist
+app.delete('/api/artist/:id', (req, res) => {
+    let id = req.params.id
+
+    Artist.findByPk(id).then((artist) => {
+        //check if exisits
+        if (artist) {
+           
+           artist.update( {state:0}).then(()=>{
+               res.json({
+                'query': 1,
+               })
+           })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
     })
 })
 
+
+
+
 //getting all sponsor
 app.get('/api/sponsor', (req, res) => {
-    Sponsor.findAll().then((Sponsor) => {
-        res.json(Sponsor)
+    Sponsor.findAll().then((sponsor) => {
+        res.json(sponsor)
     })
 
 })
@@ -102,17 +127,52 @@ app.get('/api/sponsor/:id', (req, res) => {
     })
 })
 
-//create new movie
-app.post('/api/movie', upload.single('movie_image'), (req, res) => {
-    Movies.create({
-        nameAr: req.body.name_ar,
-        nameEn: req.body.name_en,
-        image: req.file.filename
+// update sponser
+app.put('/api/sponsor/:id', (req, res) => {
+    let id = req.params.id
+    Sponsor.findByPk(id).then((sponser) => {
+        //check if exisits
+        if (sponser) {
+            // updating
+            sponser.update(req.body).then(() => {
+                res.json(
+                    { 'query': 1,
+                
+                    })
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
 
-    }).then((Movie) => {
-        res.json(Movie)
+    })
+}) 
+
+//delete sponsor
+app.delete('/api/sponsor/:id', (req, res) => {
+    let id = req.params.id
+
+    Sponsor.findByPk(id).then((sponsor) => {
+        //check if exisits
+        if (sponsor) {
+           
+            sponsor.update( {state:0}).then(()=>{
+               res.json({
+                'query': 1,
+               })
+           })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
     })
 })
+
 
 //getting all movies
 app.get('/api/movie', (req, res) => {
@@ -139,15 +199,49 @@ app.get('/api/movie/:id', (req, res) => {
     })
 })
 
-//create new club
-app.post('/api/club', upload.single('club_image'), (req, res) => {
-    Club.create({
-        nameAr: req.body.name_ar,
-        nameEn: req.body.name_en,
-        image: req.file.filename
+// update Movies
+app.put('/api/movies/:id', (req, res) => {
+    let id = req.params.id
+    Movies.findByPk(id).then((movies) => {
+        //check if exisits
+        if (movies) {
+            // updating
+            movies.update(req.body).then(() => {
+                res.json(
+                    { 'query': 1,
+                
+                    })
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
 
-    }).then((club) => {
-        res.json(club)
+    })
+}) 
+
+//delete Movies
+app.delete('/api/sponsor/:id', (req, res) => {
+    let id = req.params.id
+
+    Movies.findByPk(id).then((movies) => {
+        //check if exisits
+        if (movies) {
+           
+            movies.update( {state:0}).then(()=>{
+               res.json({
+                'query': 1,
+               })
+           })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
     })
 })
 
@@ -175,6 +269,53 @@ app.get('/api/club/:id', (req, res) => {
 
     })
 })
+
+// update clubs
+app.put('/api/club/:id', (req, res) => {
+    let id = req.params.id
+    Club.findByPk(id).then((club) => {
+        //check if exisits
+        if (club) {
+            // updating
+            club.update(req.body).then(() => {
+                res.json(
+                    { 'query': 1,
+                
+                    })
+            })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+}) 
+
+//delete club
+app.delete('/api/club/:id', (req, res) => {
+    let id = req.params.id
+
+    Club.findByPk(id).then((club) => {
+        //check if exisits
+        if (club) {
+           
+            movies.update( {state:0}).then(()=>{
+               res.json({
+                'query': 1,
+               })
+           })
+        } else {
+            res.json({
+                'query': -1,
+                "cause": "not found"
+            })
+        }
+
+    })
+})
+
 
 app.listen(3004,()=>{
     console.log('app it running in port 3004')
