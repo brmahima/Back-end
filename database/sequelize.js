@@ -5,6 +5,7 @@ module.exports = new Sequelize('tickets','root','',{
     host: 'localhost',
     dialect:'mysql',
     operatorsAliases: false,
+    timestamps:true,
   
     pool: {
       max: 5,
