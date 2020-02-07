@@ -28,7 +28,13 @@ app.use(bodyParser.json())
 var Vendor = require('./modules/vendor')
 // event module
 var Event = require('./modules/event')
+//artist module
+const Artist = require("./modules/artist")
 const TypeOfEvent = require("./modules/typeOfEvent")
+
+//eventWithArtist
+const EventWithArtist = require("./modules/eventWithArtist")
+
 // realtionships
 //vendor with event ..start
 Vendor.hasMany(Event, {
@@ -46,6 +52,22 @@ TypeOfEvent.hasMany(Event, {
 Event.belongsTo(TypeOfEvent, {
     foreignKey: 'type_of_event_id'
 })
+
+
+//Event with artist ..start
+Event.belongsToMany(Artist,{
+    through:"event_with_artist",
+    foreignKey: 'event_id',
+    timestamps:false
+})
+Artist.belongsToMany(Event,{
+    through:"event_with_artist",
+    foreignKey: 'artist_id',
+    timestamps:false
+})
+//event with artist ..end
+
+
 
 app.post('/api/event', (req, res) => {
 
