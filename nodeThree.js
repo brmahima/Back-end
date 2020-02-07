@@ -1,5 +1,5 @@
 const express = require('express')
-const Sequelize = require('Sequelize')
+
 const bodyParser = require('body-parser')
 const multer = require("multer")
 const app = express()
@@ -14,7 +14,12 @@ const storage = multer.diskStorage({
 
 
 })
-
+//to gidaq
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 const upload = multer({
     storage: storage
 })
@@ -27,40 +32,65 @@ const Admin = require('././modules/admin')
 //create admin account
 app.post('/api/admin', (req, res) => {
     console.log(req.body)
-    Admin.create({
-        full_Name: req.body.full_Name,
-        userName: req.body.userName,
-        email: req.body.email,
-        password: req.body.password,
-        permission: +req.body.permission,
-        jobTitle: req.body.jobTitle,
-        createAt: req.body.createAt,
-        updateAt: req.body.updateAt
+    Admin.findOne({
+        where:
+        {userName:req.body.userName}}
+        ).then((admin)=>{
+        if(!admin){
+            Admin.create({
+                fullName: req.body.fullName,
+                userName: req.body.userName,
+                email: req.body.email,
+                password: req.body.password,
+                permission: +req.body.permission,
+                jobTitle: req.body.jobTitle
+        
+            }).then((admin) => {
+                if(admin){
+                    res.json({
+                        'query': 1,
+                        'admins':admin})
+                }else{
+                    res.json({
+                        'query': -1,
+                        'cuase':''
+                    })
+                }
+            
+            })
+        }else{
+            res.json({
+                'query': -1,
+                'cuase':'user Name its found',
+               
 
-    }).then((admin) => {
-
-        res.json(admin)
+            })
+        }
     })
+
+   
 })
 
 //login admin
 app.post('/api/adminLogin', (req, res) => {
     console.log(req.body)
 
-    Admin.findOne({
+    Admin.findAll({
 
         where: {
             email: req.body.email,
             password: req.body.password
         }
-    }).then((loginInfo) => {
+    }).then((admin) => {
 
-        if (loginInfo == null) {
+        if (admin) {
             res.json({
-                "massage": "not found"
-            })
+                'query': 1,
+                'admins':admin})
         } else {
-            res.json(loginInfo)
+            res.json({
+                'query': -1,
+                'cause':'admin not found'})
         }
     })
 
@@ -68,7 +98,15 @@ app.post('/api/adminLogin', (req, res) => {
 //getting all admins
 app.get('/api/admin', (req, res) => {
     Admin.findAll().then((admin) => {
-        res.json(admin)
+        if (admin) {
+            res.json({
+                'query': 1,
+                'admins':admin})
+        } else {
+            res.json({
+                'query': -1,
+                'cause':'admin not found'})
+        }
     })
 
 })

@@ -1,5 +1,5 @@
 const express = require('express')
-const Sequelize = require('Sequelize')
+
 const bodyParser = require('body-parser')
 const multer = require("multer")
 const app = express()
@@ -14,7 +14,12 @@ const storage = multer.diskStorage({
 
 
 })
-
+//to gidaq
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 const upload = multer({
     storage: storage
 })
@@ -24,7 +29,7 @@ var Vendor = require('./modules/vendor')
 
 // vendor login
 app.post('/api/vendorLogin', (req, res) => {
-    console.log(req.body)
+    
 
     Vendor.findOne({
 
@@ -43,7 +48,7 @@ app.post('/api/vendorLogin', (req, res) => {
             res.json({
                 'query': 1,
                 "cause": "ok",
-                'vendor': vendor
+                'vendors': vendor
             })
         }
     })
@@ -53,7 +58,7 @@ app.post('/api/vendorLogin', (req, res) => {
 
 // Create veondror by mody
 //upload the logo bu brma
-app.post('/api/vendor', upload.single('vender_logo'), (req, res) => {
+app.post('/api/vendor', upload.single('venderImage'), (req, res) => {
 
 
     Vendor.create({
@@ -74,16 +79,67 @@ app.post('/api/vendor', upload.single('vender_logo'), (req, res) => {
         if (vendor) {
             res.json({
                 'query': 1,
-                "cause": "ok",
-                'vendor': vendor
+            
+                'vendors': vendor
             })
         } else {
             res.json({
                 'query': -1,
                 //here is the error message
-                "cause": "error"
+                "cause": "not found"
             })
         }
+    })
+
+})
+
+app.get('/api/vendors/:start/:limit', (req, res) => {
+    let start = req.params.start
+let limt = req.params.limit
+    Vendor.findAndCountAll().then((vendor) => {
+        if(vendor){
+            if(+vendor.count<= +limt){
+                res.json({
+                    'query':1,
+                    'vendors':vendor.rows,
+                    'state':'its end'
+                })
+            }else if(+vendor.count>+limt){
+                Vendor.findAndCountAll({
+                    offset:+start,
+                    limit:+limt,
+                    subQuery:false
+                }).then((vend)=>{
+                    if(vend.rows.length!=0){ 
+                    if(vend.rows.length<+limt){
+                        res.json({
+                            'query':1,
+                            'start':+start +vend.rows.length,
+                            'vendors':vend.rows,
+                            'state':'its end'
+                        })
+                    }else if(vend.rows.length>= +limt) {
+                        res.json({
+                            'query':1,
+                            'start':+start + +limt,
+                            'vendors':vend.rows,
+                            'state':'load more'
+                        })
+                    }}else{
+                        res.json({
+                            'query': -1,
+                            'cuase':'not found'
+                        }) 
+                    }
+                })
+            }
+        }else {
+            res.json({
+                'query': -1,
+                'cuase':'not found'
+            })
+        }
+        
     })
 
 })
@@ -91,7 +147,18 @@ app.post('/api/vendor', upload.single('vender_logo'), (req, res) => {
 //getting all vendors
 app.get('/api/vendor', (req, res) => {
     Vendor.findAll().then((vendor) => {
-        res.json(vendor)
+        if (vendor) {
+            res.json({
+                'query': 1,
+                'vendors': vendor
+            })
+        } else {
+            res.json({
+                'query': -1,
+                //here is the error message
+                "cause": "not found"
+            })
+        }
     })
 
 })
@@ -101,11 +168,15 @@ app.get('/api/vendor/:id', (req, res) => {
     let id = req.params.id
     Vendor.findByPk(id).then((vendor) => {
         //check if exisits
-        if (vendor)
-            res.json(vendor)
-        else {
+        if (vendor) {
+            res.json({
+                'query': 1,
+                'vendors': vendor
+            })
+        } else {
             res.json({
                 'query': -1,
+                //here is the error message
                 "cause": "not found"
             })
         }
@@ -121,7 +192,12 @@ app.delete('/api/vendor/:id', (req, res) => {
         if (vendor) {
             // clearing joind tables beacuse i's a foriegn key
             vendor.setTracks([]).then(() => {
-                vendor.destroy().then()
+                vendor.destroy().then(()=>{
+                    res.json({
+                        'query': 1,
+                        "cause": "deleted"
+                       })
+                })
             })
         } else {
             res.json({
@@ -140,7 +216,17 @@ app.put('/api/vendor/:id', (req, res) => {
         if (vendor) {
             // updating
             vendor.update(req.body).then((vendorU) => {
-                res.json(vendorU)
+                if(vendorU){
+                    res.json({
+                        'query': 1,
+                        "vendors": vendorU
+                       })
+                }else{
+                    res.json({
+                        'query': -1,
+                        'cause': 'not updated'
+                       })
+                }
             })
         } else {
             res.json({
